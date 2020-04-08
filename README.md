@@ -11,13 +11,14 @@ $ npm install umi-plugin-dynamic-route --save
 
 ## Usage
 
-需要三个步骤开始.
+需要两个步骤开始.
 
 ### 1. 配置 .umirc.js
 
 ```js
 export default {
   plugins: [['umi-plugin-dynamic-route', options]],
+  //暂存的路由配置，会自动组装component 通过getDynamicRoutes获取组装后的数据
   dynamicRoutes:{},
 };
 ```
