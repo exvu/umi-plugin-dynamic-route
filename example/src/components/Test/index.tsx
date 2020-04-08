@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.less';
 import { Link } from 'umi';
-
+import md5 from 'md5';
 import { getRoutes, updateRoutes, dynamic } from 'umi';
 
 export default ({ title, routes }) => {
@@ -22,7 +22,7 @@ export default ({ title, routes }) => {
             console.log(routes);
             //修改路由
             routes[0].routes.push({
-              path: '/' + Math.random(),
+              path: '/' + md5(Math.random()),
               component: dynamic({
                 loader: () => import('@/pages/test3'),
               }),
@@ -33,7 +33,7 @@ export default ({ title, routes }) => {
 
           }}
         >
-          添加test3路由并重新render
+          随机产生地址添加test3界面并重新render
         </a>
       </div>
     </div>
