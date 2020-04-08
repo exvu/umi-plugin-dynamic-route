@@ -6,10 +6,10 @@ import { ApplyPluginsType } from '{{{ runtimePath }}}';
 import { renderClient } from '{{{ renderPath }}}';
 
 
-
+let cacheRoutes = [];
 
 const updateRoutes = (routes) => {
-  console.log("路由更新",routes)
+  cacheRoutes = routes;
   return plugin.applyPlugins({
     key: 'render',
     type: ApplyPluginsType.modify,
@@ -20,8 +20,8 @@ const updateRoutes = (routes) => {
         routes,
         plugin,
         history,
-        rootElement: 'root',
-        defaultTitle: '',
+        rootElement: '{{{ rootElement }}}',
+        defaultTitle: '{{{ defaultTitle }}}',
       });
     },
     args:{},
