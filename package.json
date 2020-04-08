@@ -1,0 +1,24 @@
+{
+  "name": "umi-plugin-dynamic-route",
+  "version": "0.0.1",
+  "description": "动态路由",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "father-build",
+    "prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish",
+    "start": "npm run build && cross-env APP_ROOT=$PWD/example umi dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/js-beautify": "^1.8.2",
+    "father-build": "^1.17.2",
+    "js-beautify": "^1.10.3",
+    "typescript": "^3.8.3",
+    "umi": "^3.1.0"
+  },
+  "peerDependencies": {
+    "umi": "^3.1.0"
+  }
+}
