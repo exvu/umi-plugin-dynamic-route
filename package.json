@@ -10,7 +10,9 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "np": "^6.2.1"
+  },
   "devDependencies": {
     "@types/js-beautify": "^1.8.2",
     "father-build": "^1.17.2",

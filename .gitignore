@@ -3,3 +3,4 @@ node_modules
 .umi
 .DS_Store
 lib
+*.log
