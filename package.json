@@ -11,13 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "np": "^6.2.1"
+    "js-beautify": "^1.10.3"
   },
   "devDependencies": {
     "@types/js-beautify": "^1.8.2",
     "father-build": "^1.17.2",
-    "js-beautify": "^1.10.3",
     "typescript": "^3.8.3",
+    "np": "^6.2.1",
     "umi": "^3.1.0"
   },
   "peerDependencies": {
