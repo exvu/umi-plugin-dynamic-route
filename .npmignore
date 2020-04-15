@@ -1,0 +1,12 @@
+src
+example
+.fatherrc.ts
+.prettierrc
+tsconfig.json
+yarn.lock
+npm.lock
+.DS_Store
+*.log
+.vscode
+npm-debug.log*
+yarn-error.log
