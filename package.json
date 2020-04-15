@@ -1,6 +1,6 @@
 {
   "name": "umi-plugin-dynamic-route",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "description": "动态路由",
   "main": "lib/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "js-beautify": "^1.10.3",
+    "js-beautify": "^1.10.3"
   },
   "devDependencies": {
     "@types/js-beautify": "^1.8.2",
