@@ -1,10 +1,11 @@
 {
   "name": "@exvu/umi-plugin-dynamic-route",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "动态路由",
   "main": "lib/index.js",
   "scripts": {
     "build": "father-build",
+    "publish": "npm publish --access public",
     "prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish",
     "start": "npm run build && cross-env APP_ROOT=$PWD/example umi dev"
   },
