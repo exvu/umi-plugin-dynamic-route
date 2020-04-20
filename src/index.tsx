@@ -36,7 +36,7 @@ export default (api: IApi) => {
       api.writeTmpFile({
         path: `${DIR}/update.ts`,
         content: Mustache.render(updateTpl, {
-          routeKey: dynamicRoutes.routeKey,
+          routeKey: dynamicRoutes.routeKey||'routeKey',
           rootElement: api.config.mountElementId,
           defaultTitle: api.config.title,
           dynamicRoutesPath: winPath(`./${DIR}/dynamicRoutes`),
