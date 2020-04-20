@@ -1,4 +1,4 @@
-# umi-plugin-dynamic-route
+# @exvu/umi-plugin-dynamic-route
 
 实现动态路由.
 
@@ -6,7 +6,7 @@
 
 ```bash
 # or yarn
-$ npm install umi-plugin-dynamic-route --save
+$ npm install @exvu/umi-plugin-dynamic-route --save
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ $ npm install umi-plugin-dynamic-route --save
 
 ```js
 export default {
-  plugins: [['umi-plugin-dynamic-route', options]],
+  plugins: [['@exvu/umi-plugin-dynamic-route', options]],
   //暂存的路由配置，会自动组装component 通过getDynamicRoutes获取组装后的数据
   dynamicRoutes:{},
 };
