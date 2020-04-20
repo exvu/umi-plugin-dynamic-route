@@ -36,6 +36,7 @@ export default (api: IApi) => {
       api.writeTmpFile({
         path: `${DIR}/update.ts`,
         content: Mustache.render(updateTpl, {
+          routeKey: dynamicRoutes.routeKey,
           rootElement: api.config.mountElementId,
           defaultTitle: api.config.title,
           dynamicRoutesPath: winPath(`./${DIR}/dynamicRoutes`),
@@ -58,7 +59,7 @@ export default (api: IApi) => {
        */
       const coreRoute = new Route();
       let routeText = '{';
-      for (const key in dynamicRoutes) {
+      for (const key in dynamicRoutes.routes||{}) {
         routeText +=
           `${key}:` +
           coreRoute.getJSON({

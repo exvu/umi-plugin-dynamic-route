@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './index.less';
 import { Link } from 'umi';
 import md5 from 'md5';
-import { getRoutes, updateRoutes, dynamic } from 'umi';
+import {  updateRoute,reloadRoutes, dynamic } from 'umi';
 
 export default ({ title, routes }) => {
   return (
@@ -17,20 +17,20 @@ export default ({ title, routes }) => {
         <a
           onClick={() => {
 
-            //获取路由
-            const routes = getRoutes()
-            console.log(routes);
-            //修改路由
-            routes[0].routes.push({
-              path: '/' + md5(Math.random()),
-              component: dynamic({
-                loader: () => import('@/pages/test3'),
-              }),
-            })
-
+            //获取完整路由
+            updateRoute("home",({route},sourceRoutes)=>{
+              if(route.routes){
+                route.routes.push({
+                  path: '/' + md5(Math.random()),
+                  component: dynamic({
+                    loader: () => import('@/pages/test3'),
+                  }),
+                })
+              }
+            });
+            
             //更新路由
-            updateRoutes(routes);
-
+            reloadRoutes();
           }}
         >
           随机产生地址添加test3界面并重新render

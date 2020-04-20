@@ -1,2 +1,5 @@
-import { dynamic } from '{{{ runtimePath }}}';
-export const routes = {{{ dynamicRoutes }}};
+const routes = {{{ dynamicRoutes }}};
+
+export {
+    routes
+}
