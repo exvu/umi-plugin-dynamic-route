@@ -4,7 +4,6 @@ import { plugin } from '../core/plugin';
 import { history } from '../core/history';
 import { ApplyPluginsType } from '{{{ runtimePath }}}';
 import { renderClient } from '{{{ renderPath }}}';
-import { routes as sourceRoutes } from '../core/routes';
 import {
   IRoute,
 } from '@umijs/core';
@@ -17,7 +16,7 @@ interface Route extends Omit<IRoute,'component'|'routes'>{
 //更新路由
 const reloadRoutes = (routes?:Route[]) => {
   if(routes==null){
-    routes = sourceRoutes;
+    routes = require('../core/routes');
   }
   return plugin.applyPlugins({
     key: 'render',
@@ -72,6 +71,7 @@ interface TargetRoute{
   route:Route
 }
 function updateRoute(key: string, callback: (route: TargetRoute, routes: Route[]) => any) {
+  const  sourceRoutes = require('../core/routes');
   const targetRoutes = findRouteByKey(sourceRoutes, key,'{{{routeKey}}}');
   
   if (targetRoutes == null) {

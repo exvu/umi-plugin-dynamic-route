@@ -15,28 +15,52 @@ export default (api: IApi) => {
     return;
   }
 
+  /**
+   * 约定配置的类型
+   */
   api.describe({
     key: 'dynamicRoutes',
     config: {
       schema(joi) {
-        return joi.object();
+        return joi.object({
+          routeKey: joi.string(),
+          routes: joi.object().pattern(/^[a-zA-Z0-9]+$/, joi.array().items(
+            joi.object({
+              path: joi.string().description('Any valid URL path'),
+              component: joi
+                .alternatives(joi.string(), joi.function())
+                .description(
+                  'A React component to render only when the location matches.',
+                ),
+              wrappers: joi.array().items(joi.string()),
+              redirect: joi.string().description('navigate to a new location'),
+              exact: joi
+                .boolean()
+                .description(
+                  'When true, the active class/style will only be applied if the location is matched exactly.',
+                ),
+              routes: joi.array().items(joi.link('...')),
+            }).unknown()
+          ))
+        });
       },
       default: {},
       onChange: api.ConfigChangeType.regenerateTmpFiles,
     },
     enableBy: api.EnableBy.config,
+
   });
+  /**
+      * ======在.umi生成函数===
+      */
   api.onGenerateFiles({
-    fn: async function () {
-      /**
-       * ======在.umi生成函数===
-       */
+    fn() {
       const updateTpl = readFileSync(join(TEMPLATE_PATH, 'update.tpl'), 'utf-8');
 
       api.writeTmpFile({
         path: `${DIR}/update.ts`,
         content: Mustache.render(updateTpl, {
-          routeKey: dynamicRoutes.routeKey||'routeKey',
+          routeKey: dynamicRoutes.routeKey || 'routeKey',
           rootElement: api.config.mountElementId,
           defaultTitle: api.config.title,
           dynamicRoutesPath: winPath(`./${DIR}/dynamicRoutes`),
@@ -44,9 +68,13 @@ export default (api: IApi) => {
           renderPath: winPath(require.resolve('@umijs/renderer-react/dist/index.js')),
         }),
       });
+    },
+  });
+  api.onGenerateFiles({
+    fn() {
       /**
-       * ======在.umi生成导出函数===
-       */
+      * ======在.umi生成导出函数===
+      */
       const exportsTpl = readFileSync(join(TEMPLATE_PATH, 'exports.tpl'), 'utf-8');
 
       api.writeTmpFile({
@@ -54,19 +82,25 @@ export default (api: IApi) => {
         content: Mustache.render(exportsTpl, {}),
       });
 
+    }
+  })
+  api.onGenerateFiles({
+    fn: async function () {
+      const dynamicRoutes = api.userConfig.dynamicRoutes;
+      // api.logger.info("更新动态路由中")
       /**
        * ======在.umi生成动态路由===
        */
       const coreRoute = new Route();
       let routeText = '{';
-      for (const key in dynamicRoutes.routes||{}) {
+      for (const key in dynamicRoutes.routes || {}) {
         routeText +=
           `${key}:` +
           coreRoute.getJSON({
             routes: await coreRoute.getRoutes({
               config: {
                 ...api.config,
-                routes: dynamicRoutes[key],
+                routes: dynamicRoutes.routes[key],
               },
               root: api.paths.absPagesPath!,
             }),
@@ -86,8 +120,9 @@ export default (api: IApi) => {
           }),
         ),
       });
-    },
-  });
+    }
+  })
+
   // 导出内容
   api.addUmiExports(() => [
     {

@@ -1,10 +1,11 @@
 import { defineConfig } from 'umi';
 import { join } from 'path';
-
+import * as dynamicRoutes from './dynamicRoutes/index'
 export default defineConfig({
   plugins: [join(__dirname, '..', require('../package.json').main || 'index.js')],
   dynamicRoutes: {
-    routeKey:"routeKey1",
+    routeKey: "routeKey1",
+    routes: dynamicRoutes
   },
   routes: [
     {
@@ -13,7 +14,7 @@ export default defineConfig({
         '@/wrappers/auth'
       ],
       component: '@/layouts/BlankLayout',
-      routeKey1:"home",
+      routeKey1: "home",
       routes: [
         { path: '/', component: '@/pages' },
         { path: 'test1', component: '@/pages/test1' },
