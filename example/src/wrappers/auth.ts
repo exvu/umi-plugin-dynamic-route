@@ -1,7 +1,6 @@
 
 import React from 'react'
-const Auth =  (props)=>{
-  console.log("ces")
+const Auth = (props) => {
   return props.children;
 }
 export default Auth;

@@ -7,18 +7,40 @@ export default defineConfig({
     routeKey: "routeKey1",
     routes: dynamicRoutes
   },
+  layout: {
+    name: 'test',
+    locale: true,
+  },
   routes: [
     {
       path: '/',
       wrappers: [
         '@/wrappers/auth'
       ],
+      menu: {
+        name: '主页', // 兼容此写法
+      },
       component: '@/layouts/BlankLayout',
       routeKey1: "home",
       routes: [
-        { path: '/', component: '@/pages' },
-        { path: 'test1', component: '@/pages/test1' },
-        { path: 'test2', component: '@/pages/test2' },
+        {
+          path: '/', component: '@/pages',
+          menu: {
+            name: 'index', // 兼容此写法
+          },
+        },
+        {
+          path: 'demo1', component: '@/pages/test1',
+          menu: {
+            name: 'demo1', // 兼容此写法
+          },
+        },
+        {
+          path: 'demo2', component: '@/pages/test1',
+          menu: {
+            name: 'demo2', // 兼容此写法
+          },
+        },
       ]
     }
   ],

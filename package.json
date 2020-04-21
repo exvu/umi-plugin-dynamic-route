@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@umijs/plugin-layout": "^0.9.1",
     "js-beautify": "^1.10.3"
   },
   "devDependencies": {

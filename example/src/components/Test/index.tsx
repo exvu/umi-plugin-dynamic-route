@@ -1,20 +1,34 @@
 import React from 'react';
 import styles from './index.less';
 import { Link } from 'umi';
-import md5 from 'md5';
-import {  updateRoute,reloadRoutes, dynamic } from 'umi';
+import { updateRoute, reloadRoutes, getDynamicRoutes } from 'umi';
 
-export default ({ title, routes }) => {
+export default ({ ...props }) => {
+  console.log(props)
   return (
     <div>
-      <h1 className={styles.title}>{title}</h1>
+      <h1 className={styles.title}>当前页面{props.location.pathname}</h1>
       <div style={{ padding: 30 }}>
-        {routes.map((item) => (
-          <div key={item.path}>
-            <Link to={item.path}>点击跳转到 {item.path}</Link>
-          </div>
-        ))}
         <a
+          onClick={() => {
+            //获取完整路由
+            updateRoute("home", ({ route }, sourceRoutes) => {
+              const routes = getDynamicRoutes('test')
+              if (route.children && routes) {
+                route.children.push(...routes)
+              } else {
+                console.error("未找到动态路由或目标路由")
+              }
+              console.log(route.children)
+            });
+
+            //更新路由
+            reloadRoutes();
+          }}
+        >
+          加载动态路由
+        </a>
+        {/* <a
           onClick={() => {
 
             //获取完整路由
@@ -34,7 +48,7 @@ export default ({ title, routes }) => {
           }}
         >
           随机产生地址添加test3界面并重新render
-        </a>
+        </a> */}
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import Test from '@/components/Test';
 export default props => {
   return (
     <div>
-      <Test title="test1" {...props} />
+      <Test {...props} />
     </div>
   );
 };

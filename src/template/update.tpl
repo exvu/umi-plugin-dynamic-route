@@ -16,7 +16,7 @@ interface Route extends Omit<IRoute,'component'|'routes'>{
 //更新路由
 const reloadRoutes = (routes?:Route[]) => {
   if(routes==null){
-    routes = require('../core/routes');
+    routes = require('../core/routes').routes;
   }
   return plugin.applyPlugins({
     key: 'render',
@@ -71,7 +71,7 @@ interface TargetRoute{
   route:Route
 }
 function updateRoute(key: string, callback: (route: TargetRoute, routes: Route[]) => any) {
-  const  sourceRoutes = require('../core/routes');
+  const  sourceRoutes = require('../core/routes').routes;
   const targetRoutes = findRouteByKey(sourceRoutes, key,'{{{routeKey}}}');
   
   if (targetRoutes == null) {

@@ -1,113 +1,68 @@
 export default [
-  { path: './', redirect: './resource/person/fare' },
   {
-    path: 'resource',
-    key: 'resource',
-    name: '资源中心',
-    icon: 'form',
+    path: './test1-1',
+    key: 'test1-1',
     type: 'group',
+    menu: {
+      name: 'test1-1',
+    },
     routes: [
-      { path: './', redirect: 'person/fare' },
       {
-        path: './person',
-        key: 'person',
-        name: '人员管理',
-        icon: 'icon-person',
-        type: 'group',
-        routes: [
-          {
-            path: './fare',
-            key: 'fare',
-            name: '会员管理',
-            icon: 'icon-fare',
-            urlKey: 'fare.list',
-            component: './test1',
-          },
-          {
-            path: './driver',
-            key: 'driver',
-            name: '司机管理',
-            icon: 'icon-driver',
-            urlKey: 'driver.list',
-            component: './test1',
-          },
-          {
-            path: './supplier',
-            key: 'supplier',
-            name: '车辆司机供应商',
-            icon: 'icon-supplier',
-            urlKey: 'supplier.list',
-            component: './test1',
-          },
-        ],
+        path: './test2-1',
+        key: 'test2-1',
+
+
+        component: './test1',
       },
       {
-        path: './devices',
-        key: 'devices',
-        name: '设备管理',
-        icon: 'icon-device',
-        type: 'group',
-        routes: [
-          {
-            path: './vehicleType',
-            key: 'vehicleType',
-            name: '车型管理',
-            icon: 'icon-vehicle-type',
-            urlKey: 'vehicleType.list',
-            component: './test1',
-          },
-          {
-            path: './vehicle',
-            key: 'vehicle',
-            name: '车辆管理',
-            icon: 'icon-vehicle',
-            urlKey: 'vehicle.list',
-            component: './test1',
-          },
-        ],
+        path: './test2-2',
+        key: 'test2-2',
+
+        menu: {
+          name: 'test2-2',
+        },
+        component: './test1',
       },
       {
-        path: './planning',
-        key: 'planning',
-        name: '路线规划',
-        type: 'group',
-        icon: 'icon-planning',
-        routes: [
-          {
-            path: './city',
-            key: 'city',
-            name: '城市管理',
-            icon: 'icon-city',
-            urlKey: 'city.list',
-            component: './test1',
-          },
-          {
-            path: './area',
-            key: 'area',
-            name: '区域管理',
-            icon: 'icon-area',
-            urlKey: 'area.list',
-            component: './test1',
-          },
-          {
-            path: './site',
-            key: 'site',
-            name: '站点管理',
-            icon: 'icon-site',
-            urlKey: 'site.list',
-            component: './test1',
-          },
-          {
-            path: './route',
-            key: 'route',
-            name: '路线管理',
-            icon: 'icon-route',
-            urlKey: 'route.list',
-            component: './test1',
-          },
-        ],
+        path: './test2-3',
+        key: 'test2-3',
+        menu: {
+          name: 'test2-3',
+        },
+        component: './test1',
       },
     ],
   },
+  {
+    path: './test1-2',
+    key: 'test1-2',
+    menu: {
+      name: 'test1-2',
+    },
+    type: 'group',
+    routes: [
+      {
+        path: './test2-1',
+        key: 'test2-1',
+        component: './test1',
+      },
+      {
+        path: './test2-2',
+        key: 'test2-2',
 
+        menu: {
+          name: 'test2-2',
+        },
+        component: './test1',
+      },
+      {
+        path: './test2-3',
+        key: 'test2-3',
+        menu: {
+          name: 'test2-3',
+        },
+        component: './test1',
+      },
+    ],
+  },
 ];
