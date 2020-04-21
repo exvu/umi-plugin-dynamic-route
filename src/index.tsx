@@ -84,26 +84,19 @@ export default (api: IApi) => {
 
     }
   })
-  api.onGenerateFiles({
-    fn: async function () {
-      const dynamicRoutes = api.userConfig.dynamicRoutes;
-      // api.logger.info("更新动态路由中")
-      /**
+  /**
        * ======在.umi生成动态路由===
        */
-      const coreRoute = new Route();
+  api.onGenerateFiles({
+    fn: async function () {
+      // api.logger.info("更新动态路由中")
+      const dynamicRoutes = await api.getDynamicRoutes();
       let routeText = '{';
-      for (const key in dynamicRoutes.routes || {}) {
+      for (const key in dynamicRoutes || {}) {
         routeText +=
           `${key}:` +
-          coreRoute.getJSON({
-            routes: await coreRoute.getRoutes({
-              config: {
-                ...api.config,
-                routes: dynamicRoutes.routes[key],
-              },
-              root: api.paths.absPagesPath!,
-            }),
+          new Route().getJSON({
+            routes: dynamicRoutes[key],
             config: api.config,
             cwd: api.cwd,
           }) +
@@ -122,7 +115,27 @@ export default (api: IApi) => {
       });
     }
   })
-
+  api.registerMethod({
+    name: 'getDynamicRoutes',
+    async fn() {
+      const route = new Route();
+      const dynamicRoutes = api.userConfig.dynamicRoutes.routes;
+      const newDynamicRoutes = {};
+      if (dynamicRoutes == null) {
+        return null;
+      }
+      for (const key in dynamicRoutes) {
+        newDynamicRoutes[key] = await route.getRoutes({
+          config: {
+            ...api.config,
+            routes: dynamicRoutes[key],
+          },
+          root: api.paths.absPagesPath!,
+        });
+      }
+      return newDynamicRoutes;
+    },
+  });
   // 导出内容
   api.addUmiExports(() => [
     {
