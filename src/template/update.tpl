@@ -33,7 +33,7 @@ const reloadRoutes = (routes?:Route[]) => {
       });
     },
     args:{},
-  });
+  })();
 };
 /**
  * 根据key获取指定路由
