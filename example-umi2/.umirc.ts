@@ -1,20 +1,43 @@
 import { IConfig } from 'umi-types';
 import { join } from 'path';
-
+import  dynamicRoutes from './dynamicRoutes/index'
 // ref: https://umijs.org/config/
 const config: IConfig = {
   treeShaking: true,
   routes: [
     {
       path: '/',
-      component: '../layouts/index',
+      routeKey1: "home",
+      component:'../layouts/index',
       routes: [
-        { path: '/', component: '../pages/index' }
+        {
+          path: '/', component: './index',
+          menu: {
+            name: '首页',
+          },
+        },
+        {
+          path: 'demo1', component: './test1',
+          menu: {
+            name: 'demo1',
+          },
+         
+        },
+        {
+          path: 'demo2', component: './test1',
+          menu: {
+            name: 'demo2',
+          },
+        
+        },
       ]
     }
   ],
+  dynamicRoutes:{
+    routeKey:'routeKey1',
+    routes:dynamicRoutes
+  },
   plugins: [
-    // ref: https://umijs.org/plugin/umi-plugin-react.html
     [
       join(__dirname, '..', require('../package.json').main || 'index.js')
     ],

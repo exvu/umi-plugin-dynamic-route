@@ -5,10 +5,11 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { js_beautify } from 'js-beautify';
 import { Route } from '@umijs/core';
-const DIR = 'plugin-dynamic-route';
+import { Config } from '..';
 const TEMPLATE_PATH = join(__dirname, 'template');
 const { Mustache, winPath } = utils;
-export default (api: IApi) => {
+export default (api: IApi,config:Config) => {
+  api.logger.info("使用umi3的动态路由插件");
   const { dynamicRoutes } = api.userConfig;
   if (!dynamicRoutes) {
     api.logger.warn('请配置dynamicRoutes,否则plugin-dynamic-route将无效');
@@ -55,15 +56,15 @@ export default (api: IApi) => {
       */
   api.onGenerateFiles({
     fn() {
-      const updateTpl = readFileSync(join(TEMPLATE_PATH, 'update.tpl'), 'utf-8');
+      const updateTpl = readFileSync(join(TEMPLATE_PATH, 'index.tpl'), 'utf-8');
 
       api.writeTmpFile({
-        path: `${DIR}/update.ts`,
+        path: `${config.dirName}/index.ts`,
         content: Mustache.render(updateTpl, {
           routeKey: dynamicRoutes.routeKey || 'routeKey',
           rootElement: api.config.mountElementId,
           defaultTitle: api.config.title,
-          dynamicRoutesPath: winPath(`./${DIR}/dynamicRoutes`),
+          dynamicRoutesPath: winPath(`./${config.dirName}/dynamicRoutes`),
           runtimePath: winPath(require.resolve('@umijs/runtime')),
           renderPath: winPath(require.resolve('@umijs/renderer-react/dist/index.js')),
         }),
@@ -78,7 +79,7 @@ export default (api: IApi) => {
       const exportsTpl = readFileSync(join(TEMPLATE_PATH, 'exports.tpl'), 'utf-8');
 
       api.writeTmpFile({
-        path: `${DIR}/exports.ts`,
+        path: `${config.dirName}/exports.ts`,
         content: Mustache.render(exportsTpl, {}),
       });
 
@@ -105,7 +106,7 @@ export default (api: IApi) => {
       routeText += '}';
       const dynamicRoutesTpl = readFileSync(join(TEMPLATE_PATH, 'dynamicRoutes.tpl'), 'utf-8');
       api.writeTmpFile({
-        path: `${DIR}/dynamicRoutes.ts`,
+        path: `${config.dirName}/dynamicRoutes.ts`,
         content: js_beautify(
           Mustache.render(dynamicRoutesTpl, {
             dynamicRoutes: routeText,
@@ -140,7 +141,7 @@ export default (api: IApi) => {
   api.addUmiExports(() => [
     {
       exportAll: true,
-      source: `../${DIR}/exports`,
+      source: `../${config.dirName}/exports`,
     },
   ]);
 };

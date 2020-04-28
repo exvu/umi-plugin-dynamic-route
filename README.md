@@ -43,10 +43,10 @@ export default defineConfig({
 #### demo1 更新基础路由中指定节点的路由
 ```ts
 import { 
-  updateRoute,reloadRoutes,dynamic } from 'umi';
+  modifyRoute,reloadRoutes,dynamic } from 'umi';
 
  //替换routeKey1=='home'的路由
-updateRoute("home",({route},sourceRoutes)=>{
+modifyRoute("home",({route},sourceRoutes)=>{
   if(route.routes){
     route.routes.push({
       path: '/' + Math.random(),
@@ -65,7 +65,7 @@ reloadRoutes();
 #### demo2 手动处理路由
 ```ts
 import { 
-  updateRoute,reloadRoutes,dynamic } from 'umi';
+  modifyRoute,reloadRoutes,dynamic } from 'umi';
 
  //获取路由
 const routes = getRoutes()
@@ -96,7 +96,7 @@ reloadRoutes(routes);
 |函数|描述|
 |:-:|:-:|:--------:|
 |**`reloadRoutes(routes?:Route[])`**|重新加载路由，使修改的路由生效，当传递routes，根据传递的进行渲染，否则使用内部的route渲染
-|**`updateRoute(key:string,callback: (route: TargetRoute, routes: Route[]) => any)`**|更新指定键的路由
+|**`modifyRoute(key:string,callback: (route: TargetRoute, routes: Route[]) => any)`**|更新指定键的路由
 |**`getRoutes`**|获取umi的路由配置
 |**`getDynamicRoutes(key?:string)`**|获取动态路由,若传递key就获取指定模块的动态路由,否则获取全部的动态路由配置
 |**`findRouteByKey(routes: Route[],key: string,routeKey:string)`**|根据键查询路由

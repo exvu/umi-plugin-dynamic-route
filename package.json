@@ -15,7 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "@umijs/plugin-layout": "^0.9.1",
-    "js-beautify": "^1.10.3"
+    "js-beautify": "^1.10.3",
+    "umi-build-dev": "^1.18.5",
+    "umi-types": "^0.5.14"
   },
   "devDependencies": {
     "@types/js-beautify": "^1.8.2",

@@ -8,6 +8,7 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "babel-plugin-import": "^1.13.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
@@ -27,8 +28,7 @@
     "lint-staged": "^7.2.2",
     "react-test-renderer": "^16.7.0",
     "umi": "^2.9.0",
-    "umi-plugin-react": "^1.8.0",
-    "umi-types": "^0.3.0"
+    "umi-plugin-react": "^1.8.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
