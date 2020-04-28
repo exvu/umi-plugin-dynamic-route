@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.less';
 import { Link } from 'umi';
-import { modifyRoute, reloadRoutes, getDynamicRoutes } from 'umi';
+import { patchRoutes, reloadRoutes, getDynamicRoutes } from 'umi';
 
 export default ({ ...props }) => {
   console.log(props)
@@ -12,7 +12,7 @@ export default ({ ...props }) => {
         <a
           onClick={() => {
             //获取完整路由
-            modifyRoute("home", ({ route }, sourceRoutes) => {
+            patchRoutes("home", ({ route }, sourceRoutes) => {
               const routes = getDynamicRoutes('test')
               if (route.children && routes) {
                 route.children.push(...routes)
@@ -32,7 +32,7 @@ export default ({ ...props }) => {
           onClick={() => {
 
             //获取完整路由
-            modifyRoute("home",({route},sourceRoutes)=>{
+            patchRoutes("home",({route},sourceRoutes)=>{
               if(route.routes){
                 route.routes.push({
                   path: '/' + md5(Math.random()),

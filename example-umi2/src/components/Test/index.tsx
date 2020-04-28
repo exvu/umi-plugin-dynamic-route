@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.less';
-import { modifyRoute, reloadRoutes, getDynamicRoutes } from 'umi';
+import { patchRoutes, reloadRoutes, getDynamicRoutes } from 'umi';
 
 export default ({ ...props }) => {
   return (
@@ -11,7 +11,7 @@ export default ({ ...props }) => {
           onClick={() => {
 
             //修改路由
-            modifyRoute("home", ({ route }, sourceRoutes) => {
+            patchRoutes("home", ({ route }, sourceRoutes) => {
               const routes = getDynamicRoutes('test')
               if (route.routes && routes) {
                 route.routes.push(...routes)

@@ -70,7 +70,7 @@ interface TargetRoute{
   index:number,
   route:Route
 }
-function modifyRoute(key: string, callback: (route: TargetRoute, routes: Route[]) => any) {
+function patchRoutes(key: string, callback: (route: TargetRoute, routes: Route[]) => any) {
   const  sourceRoutes = require('../core/routes').routes;
   const targetRoutes = findRouteByKey(sourceRoutes, key,'{{{routeKey}}}');
   
@@ -92,7 +92,7 @@ function getDynamicRoutes(key?: string):Route|null {
 }
 
 export {
-  modifyRoute,
+  patchRoutes,
   getRoutes,
   reloadRoutes,
   findRouteByKey,
