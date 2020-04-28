@@ -1,5 +1,5 @@
 src
-example
+example*
 .fatherrc.ts
 .prettierrc
 tsconfig.json

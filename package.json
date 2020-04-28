@@ -8,7 +8,8 @@
     "dev": "father-build --watch",
     "publish": "npm publish --access public",
     "prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish",
-    "example": "father-build  && cross-env APP_ROOT=$PWD/example umi dev"
+    "umi3": "cd example-umi3  && tyarn start",
+    "umi2": "cd example-umi2  && tyarn start"
   },
   "author": "",
   "license": "ISC",
