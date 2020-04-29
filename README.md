@@ -1,6 +1,9 @@
 # @exvu/umi-plugin-dynamic-route
 
-实现动态路由.
+实现umi2,umi3动态路由。
+
+### 实现原理
+通过修改routes对象，再触发render使界面刷新，让新路由生效。
 
 ## 安装
 
@@ -25,6 +28,7 @@ export default defineConfig({
   routes: [
     {
       path: '/',
+      //umi2 umi3 配置雷同
       wrappers: [
         '@/wrappers/auth'
       ],
@@ -36,51 +40,45 @@ export default defineConfig({
   ],
 });
 ```
+### 12. 配置 app.ts
 
-### 2. 在项目中使用
-
-
-#### demo1 更新基础路由中指定节点的路由
 ```ts
-import { 
-  patchRoutes,reloadRoutes,dynamic } from 'umi';
+import { getDynamicRoutes, findRouteByKey } from 'umi';
 
- //替换routeKey1=='home'的路由
-patchRoutes("home",({route},sourceRoutes)=>{
-  if(route.routes){
-    route.routes.push({
-      path: '/' + Math.random(),
-      component: dynamic({
-        loader: () => import('@/pages/moduleA'),
-      }),
-      routes:getDynamicRoutes("moduleA"),
-    })
-  }
+export function patchDynamicRoutes({  routes, test,...options }) {
+    //test 通过reloadRoutes传递的自定义参数
+    
+    console.log("执行patchDynamicRoutes");
+    //根据key快速定位到指定节点。
+    const targetRoute = findRouteByKey(routes, 'home', 'routeKey1');
+    if (targetRoute) {
+        //获取某个模块的路由
+        const dynamicRoutes = getDynamicRoutes('test')
+        if (targetRoute.route && dynamicRoutes) {
+            //更新路由逻辑
+            targetRoute.route.routes.splice(targetRoute.route.routes.length - 1, 0, ...dynamicRoutes)
+            console.error("替换路由成功", routes)
+        } else {
+            console.error("未找到动态路由", dynamicRoutes)
+        }
+
+    } else {
+        console.error("未找到目标路由")
+    }
+}
+```
+
+### 3. 在项目中使用
+
+
+#### 请求更新路由（项目任意位置调用） 可以在reloadRoutes将自定义参数传递给app.ts的patchDynamicRoutes
+```ts
+import { patchRoutes,reloadRoutes,dynamic } from 'umi';
+//更新路由
+reloadRoutes({
+  test:'自定义字段'
 });
-
-//更新路由
-reloadRoutes();
 ```
-
-#### demo2 手动处理路由
-```ts
-import { 
-  patchRoutes,reloadRoutes,dynamic } from 'umi';
-
- //获取路由
-const routes = getRoutes()
-//修改路由
-routes[0].routes.push({
-  path: '/' + Math.random(),
-  component: dynamic({
-    loader: () => import('@/pages/test3'),
-  }),
-})
-
-//更新路由
-reloadRoutes(routes);
-```
-
 ### 配置文档
 
 <h3>dynamicRoutes配置参数</h3>  
@@ -95,13 +93,19 @@ reloadRoutes(routes);
 
 |函数|描述|
 |:-:|:-:|:--------:|
-|**`reloadRoutes(routes?:Route[])`**|重新加载路由，使修改的路由生效，当传递routes，根据传递的进行渲染，否则使用内部的route渲染
-|**`patchRoutes(key:string,callback: (route: TargetRoute, routes: Route[]) => any)`**|更新指定键的路由
-|**`getRoutes`**|获取umi的路由配置
-|**`getDynamicRoutes(key?:string)`**|获取动态路由,若传递key就获取指定模块的动态路由,否则获取全部的动态路由配置
-|**`findRouteByKey(routes: Route[],key: string,routeKey:string)`**|根据键查询路由
+|**`reloadRoutes(option?:Option[])`**|请求重新路由，在更新路由之前会触发patchDynamicRoutes修改路由|
+|**`getRoutes`**|获取umi的路由配置|
+|**`getDynamicRoutes(key?:string)`**|获取动态路由,若传递key就获取指定模块的动态路由,否则获取全部的动态路由配置|
+|**`findRouteByKey(routes: Route[],key: string,routeKey:string)`**|根据键查询路由|
 
-完整例子请看 in [./example](https://github.com/exvu/umi-plugin-dynamic-route/tree/master/example)
+<h3>运行时配置</h3>  
+
+|函数|描述|
+|:-:|:-:|:--------:|
+|**`patchDynamicRoutes(option?:Option[])`**|修改动态配置路由
+
+umi2完整例子请看 in [./example-umi2](https://github.com/exvu/umi-plugin-dynamic-route/tree/master/example-umi2)
+umi3完整例子请看 in [./example-umi3](https://github.com/exvu/umi-plugin-dynamic-route/tree/master/example-umi3)
 
 ## LICENSE
 
