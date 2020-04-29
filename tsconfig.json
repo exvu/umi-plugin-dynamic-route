@@ -18,6 +18,7 @@
     "**/*.spec.ts",
     "lib",
     "fixtures",
-    "examples"
-  ]
+    "examples",
+    "umi2/app.ts"
+  ],
 }

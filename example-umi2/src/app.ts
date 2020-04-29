@@ -1,5 +1,6 @@
 import 'antd/dist/antd.css';
-import { getDynamicRoutes, findRouteByKey } from 'umi';
+import { getDynamicRoutes, findRouteByKey,reloadRoutesOptions } from 'umi';
+
 export function patchDynamicRoutes({ routes, ...options }) {
     console.log("执行patchDynamicRoutes");
     const targetRoute = findRouteByKey(routes, 'home', 'routeKey1');
@@ -19,5 +20,8 @@ export function patchDynamicRoutes({ routes, ...options }) {
     }
 }
 export function patchRoutes(routes) {
-    console.log(routes);
+    console.log(routes,);
+}
+export function rootContainer(dom){
+    return dom;
 }

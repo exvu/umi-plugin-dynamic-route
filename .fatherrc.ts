@@ -7,5 +7,5 @@ export default {
         [
             '@babel/plugin-transform-runtime',
         ]
-    ]
+    ],
 };

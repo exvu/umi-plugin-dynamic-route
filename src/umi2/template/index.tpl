@@ -10,23 +10,19 @@ interface Route extends Omit<IRoute,'component'|'routes'>{
   routes?: Route[];
 }
 interface ReloadRoutesOptions{
+  isModify:boolean;
   [index:string]:any
 }
 //动态路由更新回调集合
-let reloadRoutesOptions:ReloadRoutesOptions = {
+export let reloadRoutesOptions:ReloadRoutesOptions = {
+  isModify:false
 };
 //更新路由
 const reloadRoutes = (options:object={})=>{
   reloadRoutesOptions = {
     ...options,
+    isModify:true
   };
-  const plugins = require('umi/_runtimePlugin');
-  plugins.applyForEach('patchDynamicRoutes', { 
-    initialValue: {
-      routes:getRoutes(),
-      ...reloadRoutesOptions,
-    },
-  });
   clientRender();
 };
 /**

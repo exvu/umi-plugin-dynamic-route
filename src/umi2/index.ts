@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { IApi } from 'umi-types';
-import { join } from 'path';
+import path from 'path';
 import assert from 'assert';
 import lodash from 'lodash';
 import joi from '@hapi/joi';
@@ -11,7 +11,7 @@ import { readFileSync } from 'fs';
 import { Config } from '..';
 import { utils } from 'umi';
 const { Mustache, winPath } = utils;
-const TEMPLATE_PATH = join(__dirname, 'template');
+const TEMPLATE_PATH = path.join(__dirname, 'template');
 export default (api: IApi, config: Config) => {
   api.log.info("使用umi2的动态路由插件");
   const { dynamicRoutes } = api.config;
@@ -69,14 +69,12 @@ export default (api: IApi, config: Config) => {
       const newDynamicRoutes = [];
       for (const key in dynamicRoutes.routes) {
         newDynamicRoutes.push({
-          path: "/",
           name: key,
           [dynamicRoutes.routeKey]: `dynamicRoutes_${key}`,
           routes: getRouteConfigFromConfig(dynamicRoutes.routes[key])
         })
       }
       routes.push({
-        path: '/_dynamicRoutes',
         name: "临时挂载动态路由",
         [dynamicRoutes.routeKey]: 'dynamicRoutes',
         routes: newDynamicRoutes
@@ -90,7 +88,7 @@ export default (api: IApi, config: Config) => {
    * =================生成插件主逻辑代码=================
    */
   api.onGenerateFiles(function () {
-    const updateTpl = readFileSync(join(TEMPLATE_PATH, 'index.tpl'), 'utf-8');
+    const updateTpl = readFileSync(path.join(TEMPLATE_PATH, 'index.tpl'), 'utf-8');
     api.writeTmpFile(`${config.dirName}/index.ts`, Mustache.render(updateTpl, {
       routeKey: dynamicRoutes.routeKey || 'routeKey',
     }));
@@ -103,9 +101,20 @@ export default (api: IApi, config: Config) => {
     /**
      * ======在.umi生成导出函数===
      */
-    const exportsTpl = readFileSync(join(TEMPLATE_PATH, 'exports.tpl'), 'utf-8');
+    const exportsTpl = readFileSync(path.join(TEMPLATE_PATH, 'exports.tpl'), 'utf-8');
 
     api.writeTmpFile(`${config.dirName}/exports.ts`, exportsTpl);
+    
+  });
+
+  api.onGenerateFiles(function () {
+    /**
+     * ======生成app.ts文件===
+     */
+    const exportsTpl = readFileSync(path.join(TEMPLATE_PATH, 'app.tpl'), 'utf-8');
+
+    api.writeTmpFile(`${config.dirName}/app.ts`, exportsTpl);
+    
   });
 
   // 导出内容
@@ -117,4 +126,9 @@ export default (api: IApi, config: Config) => {
   ]);
   api.addEntryCode(`export {clientRender}`)
   api.addRuntimePluginKey('patchDynamicRoutes')
+
+  // api.addRuntimePlugin(() => [`${api.paths.absTmpDirPath}/${config.dirName}/app.ts`]);
+  api.addEntryCodeAhead(`
+  plugins.use(require('@/pages/.umi/${config.dirName}/app'))
+`);
 };
