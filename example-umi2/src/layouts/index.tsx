@@ -7,19 +7,19 @@ const { Header, Content, Sider } = Layout;
 function buildMenu(routes: any) {
 
   return routes.map(item => {
-    if(!item.path){
+    if (!item.path) {
       return null;
     }
     if (item.routes) {
       return (
-        <Menu.SubMenu title={item.menu?.name||item._title}>
+        <Menu.SubMenu title={item.menu?.name || item._title}>
           {buildMenu(item.routes)}
         </Menu.SubMenu>
       );
     }
     return (
-      <Menu.Item title={item.menu?.name||item._title}>
-        <Link to={item.path}>{item.menu?.name||item._title}</Link>
+      <Menu.Item title={item.menu?.name || item._title}>
+        <Link to={item.path}>{item.menu?.name || item._title}</Link>
       </Menu.Item>
     )
   })

@@ -23,6 +23,13 @@ const reloadRoutes = (options:object={})=>{
     ...options,
     isModify:true,
   };
+  const plugins = require('umi/_runtimePlugin');
+  plugins.applyForEach('patchDynamicRoutes', { 
+    initialValue: {
+      routes:getRoutes(),
+      ...reloadRoutesOptions,
+    },
+  });
   clientRender();
 };
 /**
@@ -71,11 +78,12 @@ const getRoutes = ():Route => require('../router').routes;
 
 //获取动态路由
 function getDynamicRoutes(key?: string):Route|null {
-  const routes = require('./dynamicRoutes').routes;
-  if (key == null) {
-    return routes;
+  const routes = getRoutes();
+  const { route } = findRouteByKey(routes, `dynamicRoutes_${key}`, '{{{routeKey}}}') || {};
+  if (!route || !route.routes) {
+    return null;
   }
-  return routes[key];
+  return route.routes;
 }
 
 export {

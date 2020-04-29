@@ -3,12 +3,12 @@
 import { IApi } from 'umi-types';
 import { join } from 'path';
 import assert from 'assert';
+import lodash from 'lodash';
 import joi from '@hapi/joi';
-import routesToJSON from 'umi-build-dev/lib/routes/routesToJSON';
+import getRouteConfigFromConfig from 'umi-build-dev/lib/routes/getRouteConfigFromConfig';
 import stripJSONQuote from 'umi-build-dev/lib/routes/stripJSONQuote';
 
 import { readFileSync } from 'fs';
-import { js_beautify } from 'js-beautify';
 import { Config } from '..';
 import { utils } from 'umi';
 const { Mustache, winPath } = utils;
@@ -59,28 +59,32 @@ export default (api: IApi, config: Config) => {
       };
     };
   });
-
-
   /**
-   * =================生成动态路由配置文件==============
+   * 为什么存在router中？ 其他第三方插件 antd-icon antd-layout 会对routes进行处理，但是不会对dynamicRoutes处理
+   * 
+   * 如何保证他靠前？
    */
-  api.onGenerateFiles(async function () {
-    api.log.info("更新动态路由中")
-    const { dynamicRoutes } = api.config;
-    let routesStr = '{';
+  api.modifyRoutes((routes) => {
+    routes = lodash.cloneDeep(routes);
     if (dynamicRoutes && dynamicRoutes.routes) {
+      const newDynamicRoutes = [];
       for (const key in dynamicRoutes.routes) {
-        routesStr += `"${key}":${stripJSONQuote(routesToJSON(dynamicRoutes.routes[key], api))}`
+        newDynamicRoutes.push({
+          path: "/",
+          name: key,
+          [dynamicRoutes.routeKey]: `dynamicRoutes_${key}`,
+          routes: getRouteConfigFromConfig(dynamicRoutes.routes[key])
+        })
       }
+      routes.push({
+        path: '/_dynamicRoutes',
+        name: "临时挂载动态路由",
+        [dynamicRoutes.routeKey]: 'dynamicRoutes',
+        routes: newDynamicRoutes
+      })
     }
-    routesStr += '}';
-    const dynamicRoutesTpl = readFileSync(join(TEMPLATE_PATH, 'dynamicRoutes.tpl'), 'utf-8');
-    api.writeTmpFile(`${config.dirName}/dynamicRoutes.ts`, js_beautify(
-      Mustache.render(dynamicRoutesTpl, {
-        dynamicRoutes: routesStr,
-        runtimePath: winPath(require.resolve('@umijs/runtime')),
-      }),
-    ));
+
+    return routes;
   })
 
   /**
@@ -90,20 +94,19 @@ export default (api: IApi, config: Config) => {
     const updateTpl = readFileSync(join(TEMPLATE_PATH, 'index.tpl'), 'utf-8');
     api.writeTmpFile(`${config.dirName}/index.ts`, Mustache.render(updateTpl, {
       routeKey: dynamicRoutes.routeKey || 'routeKey',
-      dynamicRoutesPath: winPath(`./${config.dirName}/dynamicRoutes`),
     }));
   });
 
   /**
    * =================生成导出代码=================
    */
-  api.onGenerateFiles(function(){
-     /**
-      * ======在.umi生成导出函数===
-      */
-     const exportsTpl = readFileSync(join(TEMPLATE_PATH, 'exports.tpl'), 'utf-8');
+  api.onGenerateFiles(function () {
+    /**
+     * ======在.umi生成导出函数===
+     */
+    const exportsTpl = readFileSync(join(TEMPLATE_PATH, 'exports.tpl'), 'utf-8');
 
-     api.writeTmpFile(`${config.dirName}/exports.ts`,exportsTpl);
+    api.writeTmpFile(`${config.dirName}/exports.ts`, exportsTpl);
   });
 
   // 导出内容
@@ -114,4 +117,5 @@ export default (api: IApi, config: Config) => {
     },
   ]);
   api.addEntryCode(`export {clientRender}`)
+  api.addRuntimePluginKey('patchDynamicRoutes')
 };
