@@ -12,7 +12,7 @@ export default [
         key: 'test2-1',
 
 
-        component: './test1',
+        component: '@/pages/test1',
       },
       {
         path: './test2-2',
@@ -21,7 +21,7 @@ export default [
         menu: {
           name: 'test2-2',
         },
-        component: './test1',
+        component: '@/pages/test1',
       },
       {
         path: './test2-3',
@@ -29,7 +29,7 @@ export default [
         menu: {
           name: 'test2-3',
         },
-        component: './test1',
+        component: '@/pages/test1',
       },
     ],
   },
@@ -44,7 +44,7 @@ export default [
       {
         path: './test2-1',
         key: 'test2-1',
-        component: './test1',
+        component: '@/pages/test1',
       },
       {
         path: './test2-2',
@@ -53,7 +53,7 @@ export default [
         menu: {
           name: 'test2-2',
         },
-        component: './test1',
+        component: '@/pages/test1',
       },
       {
         path: './test2-3',
@@ -61,7 +61,7 @@ export default [
         menu: {
           name: 'test2-3',
         },
-        component: './test1',
+        component: '@/pages/test1',
       },
     ],
   },

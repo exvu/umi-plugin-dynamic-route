@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.less';
 import { Link } from 'umi';
-import { patchRoutes, reloadRoutes, getDynamicRoutes } from 'umi';
+import { reloadRoutes } from 'umi';
 
 export default ({ ...props }) => {
   console.log(props)
@@ -11,44 +11,12 @@ export default ({ ...props }) => {
       <div style={{ padding: 30 }}>
         <a
           onClick={() => {
-            //获取完整路由
-            patchRoutes("home", ({ route }, sourceRoutes) => {
-              const routes = getDynamicRoutes('test')
-              if (route.children && routes) {
-                route.children.push(...routes)
-              } else {
-                console.error("未找到动态路由或目标路由")
-              }
-              console.log(route.children)
-            });
-
             //更新路由
             reloadRoutes();
           }}
         >
           加载动态路由
         </a>
-        {/* <a
-          onClick={() => {
-
-            //获取完整路由
-            patchRoutes("home",({route},sourceRoutes)=>{
-              if(route.routes){
-                route.routes.push({
-                  path: '/' + md5(Math.random()),
-                  component: dynamic({
-                    loader: () => import('@/pages/test3'),
-                  }),
-                })
-              }
-            });
-            
-            //更新路由
-            reloadRoutes();
-          }}
-        >
-          随机产生地址添加test3界面并重新render
-        </a> */}
       </div>
     </div>
   );

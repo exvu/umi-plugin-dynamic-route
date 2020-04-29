@@ -61,7 +61,10 @@ interface TargetRoute{
   route:Route
 }
 function modifyRoutes(callback: (options: ReloadRoutesOptions) => void) {
-  callback(reloadRoutesOptions)
+  callback({
+    ...reloadRoutesOptions,
+    dynamicRoutes:getDynamicRoutes(),
+  })
 }
 // 获取基础路由
 const getRoutes = ():Route => require('../router').routes;

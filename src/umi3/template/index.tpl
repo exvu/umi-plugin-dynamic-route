@@ -3,7 +3,7 @@
 import { plugin } from '../core/plugin';
 import { history } from '../core/history';
 import { ApplyPluginsType } from '{{{ runtimePath }}}';
-import { renderClient } from '{{{ renderPath }}}';
+import {clientRender} from '../umi';
 import {
   IRoute,
 } from '@umijs/core';
@@ -12,28 +12,21 @@ interface Route extends Omit<IRoute,'component'|'routes'>{
   component?: any;
   routes?: Route[];
 }
-
+interface ReloadRoutesOptions{
+  isModify:boolean,
+  [index:string]:any
+}
+//动态路由更新回调集合
+let reloadRoutesOptions:ReloadRoutesOptions = {
+  isModify:false,
+};
 //更新路由
-const reloadRoutes = (routes?:Route[]) => {
-  if(routes==null){
-    routes = require('../core/routes').routes;
-  }
-  return plugin.applyPlugins({
-    key: 'render',
-    type: ApplyPluginsType.modify,
-    initialValue: () => {
-      console.log("路由已更新")
-      return renderClient({
-        // @ts-ignore
-        routes,
-        plugin,
-        history,
-        rootElement: '{{{ rootElement }}}',
-        defaultTitle: '{{{ defaultTitle }}}',
-      });
-    },
-    args:{},
-  })();
+const reloadRoutes = (options:object={})=>{
+  reloadRoutesOptions = {
+    ...options,
+    isModify:true,
+  };
+  clientRender({ hot: true })();
 };
 /**
  * 根据key获取指定路由
@@ -70,14 +63,11 @@ interface TargetRoute{
   index:number,
   route:Route
 }
-function patchRoutes(key: string, callback: (route: TargetRoute, routes: Route[]) => any) {
-  const  sourceRoutes = require('../core/routes').routes;
-  const targetRoutes = findRouteByKey(sourceRoutes, key,'{{{routeKey}}}');
-  
-  if (targetRoutes == null) {
-    throw new Error("目标路由不存在");
-  }
-  callback(targetRoutes, sourceRoutes);
+function modifyRoutes(callback: (options: ReloadRoutesOptions) => void) {
+   callback({
+    ...reloadRoutesOptions,
+    dynamicRoutes:getDynamicRoutes(),
+  })
 }
 // 获取基础路由
 const getRoutes = ():Route => require('../core/routes').routes;
@@ -92,7 +82,7 @@ function getDynamicRoutes(key?: string):Route|null {
 }
 
 export {
-  patchRoutes,
+  modifyRoutes,
   getRoutes,
   reloadRoutes,
   findRouteByKey,

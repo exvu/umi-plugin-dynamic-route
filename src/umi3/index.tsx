@@ -8,7 +8,7 @@ import { Route } from '@umijs/core';
 import { Config } from '..';
 const TEMPLATE_PATH = join(__dirname, 'template');
 const { Mustache, winPath } = utils;
-export default (api: IApi,config:Config) => {
+export default (api: IApi, config: Config) => {
   api.logger.info("使用umi3的动态路由插件");
   const { dynamicRoutes } = api.userConfig;
   if (!dynamicRoutes) {
@@ -71,11 +71,12 @@ export default (api: IApi,config:Config) => {
       });
     },
   });
+  /**
+   * ======在.umi生成导出函数===
+   */
   api.onGenerateFiles({
     fn() {
-      /**
-      * ======在.umi生成导出函数===
-      */
+
       const exportsTpl = readFileSync(join(TEMPLATE_PATH, 'exports.tpl'), 'utf-8');
 
       api.writeTmpFile({
@@ -86,12 +87,25 @@ export default (api: IApi,config:Config) => {
     }
   })
   /**
-       * ======在.umi生成动态路由===
-       */
+   * ======在.umi生成动态路由===
+   */
   api.onGenerateFiles({
     fn: async function () {
-      // api.logger.info("更新动态路由中")
-      const dynamicRoutes = await api.getDynamicRoutes();
+      const route = new Route();
+      const dynamicRoutes = api.userConfig.dynamicRoutes.routes;
+      const newDynamicRoutes = {};
+      if (dynamicRoutes == null) {
+        return null;
+      }
+      for (const key in dynamicRoutes) {
+        newDynamicRoutes[key] = await route.getRoutes({
+          config: {
+            ...api.config,
+            routes: dynamicRoutes[key],
+          },
+          root: api.paths.absPagesPath!,
+        });
+      }
       let routeText = '{';
       for (const key in dynamicRoutes || {}) {
         routeText +=
@@ -116,32 +130,16 @@ export default (api: IApi,config:Config) => {
       });
     }
   })
-  api.registerMethod({
-    name: 'getDynamicRoutes',
-    async fn() {
-      const route = new Route();
-      const dynamicRoutes = api.userConfig.dynamicRoutes.routes;
-      const newDynamicRoutes = {};
-      if (dynamicRoutes == null) {
-        return null;
-      }
-      for (const key in dynamicRoutes) {
-        newDynamicRoutes[key] = await route.getRoutes({
-          config: {
-            ...api.config,
-            routes: dynamicRoutes[key],
-          },
-          root: api.paths.absPagesPath!,
-        });
-      }
-      return newDynamicRoutes;
-    },
-  });
   // 导出内容
   api.addUmiExports(() => [
     {
       exportAll: true,
       source: `../${config.dirName}/exports`,
     },
+  ]);
+  api.addEntryCode(() => [
+    `export {
+       getClientRender as clientRender
+    }`
   ]);
 };
