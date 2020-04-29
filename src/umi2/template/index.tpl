@@ -9,11 +9,20 @@ interface Route extends Omit<IRoute,'component'|'routes'>{
   component?: any;
   routes?: Route[];
 }
-
+interface ReloadRoutesOptions{
+  isModify:boolean,
+  [index:string]:any
+}
 //动态路由更新回调集合
-const patchRoutesCallback = [];
+let reloadRoutesOptions:ReloadRoutesOptions = {
+  isModify:false,
+};
 //更新路由
-const reloadRoutes = ()=>{
+const reloadRoutes = (options:object={})=>{
+  reloadRoutesOptions = {
+    ...options,
+    isModify:true,
+  };
   clientRender();
 };
 /**
@@ -51,11 +60,8 @@ interface TargetRoute{
   index:number,
   route:Route
 }
-function patchRoutes(key: string, callback: (route: TargetRoute, routes: Route[]) => any) {
-  patchRoutesCallback.push({
-    key,
-    callback,
-  });
+function modifyRoutes(callback: (options: ReloadRoutesOptions) => void) {
+  callback(reloadRoutesOptions)
 }
 // 获取基础路由
 const getRoutes = ():Route => require('../router').routes;
@@ -69,22 +75,8 @@ function getDynamicRoutes(key?: string):Route|null {
   return routes[key];
 }
 
-const plugins = require('umi/_runtimePlugin');
-plugins.applyForEach('patchRoutes', { 
-  initialValue(sourceRoutes){
-    for(const item of patchRoutesCallback){
-        const targetRoutes = findRouteByKey(sourceRoutes, item.key,'{{{routeKey}}}');
-          if (targetRoutes == null) {
-          throw new Error("目标路由不存在");
-        }
-        item.callback(targetRoutes, sourceRoutes);
-    }
-    return sourceRoutes;
-  } 
-});
-
 export {
-  patchRoutes,
+  modifyRoutes,
   getRoutes,
   reloadRoutes,
   findRouteByKey,
