@@ -1,9 +1,9 @@
 
 
 import { plugin } from '../core/plugin';
-import { history } from '../core/history';
 import { ApplyPluginsType } from '{{{ runtimePath }}}';
 import {clientRender} from '../umi';
+import lodash from 'lodash'
 import {
   IRoute,
 } from '@umijs/core';
@@ -13,19 +13,28 @@ interface Route extends Omit<IRoute,'component'|'routes'>{
   routes?: Route[];
 }
 interface ReloadRoutesOptions{
-  isModify:boolean,
   [index:string]:any
 }
 //动态路由更新回调集合
 let reloadRoutesOptions:ReloadRoutesOptions = {
-  isModify:false,
 };
 //更新路由
 const reloadRoutes = (options:object={})=>{
   reloadRoutesOptions = {
     ...options,
-    isModify:true,
   };
+  const routes = getRoutes();
+  plugin.applyPlugins({
+    key: 'patchDynamicRoutes',
+    type: ApplyPluginsType.event,
+    args: { 
+      routes,
+        ...reloadRoutesOptions,
+    },
+  });
+  //深度克隆
+  const newRoute = lodash.cloneDeep([...routes]);
+  routes.splice(0,routes.length,...newRoute)
   clientRender({ hot: true })();
 };
 /**
@@ -63,26 +72,20 @@ interface TargetRoute{
   index:number,
   route:Route
 }
-function modifyRoutes(callback: (options: ReloadRoutesOptions) => void) {
-   callback({
-    ...reloadRoutesOptions,
-    dynamicRoutes:getDynamicRoutes(),
-  })
-}
 // 获取基础路由
 const getRoutes = ():Route => require('../core/routes').routes;
 
 //获取动态路由
 function getDynamicRoutes(key?: string):Route|null {
-  const routes = require('./dynamicRoutes').routes;
-  if (key == null) {
-    return routes;
+  const routes = getRoutes();
+  const { route } = findRouteByKey(routes, `dynamicRoutes_${key}`, '{{{routeKey}}}') || {};
+  if (!route || !route.routes) {
+    return null;
   }
-  return routes[key];
+  return route.routes;
 }
 
 export {
-  modifyRoutes,
   getRoutes,
   reloadRoutes,
   findRouteByKey,

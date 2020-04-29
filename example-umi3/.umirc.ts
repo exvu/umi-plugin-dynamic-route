@@ -32,7 +32,7 @@ export default defineConfig({
         {
           path: 'demo1', component: '@/pages/test1',
           menu: {
-            name: 'demo1', // 兼容此写法
+            name: 'demo', // 兼容此写法
           },
         },
         {

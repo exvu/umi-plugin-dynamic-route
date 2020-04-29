@@ -6,7 +6,6 @@ import assert from 'assert';
 import lodash from 'lodash';
 import joi from '@hapi/joi';
 import getRouteConfigFromConfig from 'umi-build-dev/lib/routes/getRouteConfigFromConfig';
-import stripJSONQuote from 'umi-build-dev/lib/routes/stripJSONQuote';
 
 import { readFileSync } from 'fs';
 import { Config } from '..';

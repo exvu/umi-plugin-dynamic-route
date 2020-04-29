@@ -2,9 +2,8 @@
 
 import { IApi, utils } from 'umi';
 import { join } from 'path';
+import lodash from 'lodash';
 import { readFileSync } from 'fs';
-import { js_beautify } from 'js-beautify';
-import { Route } from '@umijs/core';
 import { Config } from '..';
 const TEMPLATE_PATH = join(__dirname, 'template');
 const { Mustache, winPath } = utils;
@@ -62,11 +61,7 @@ export default (api: IApi, config: Config) => {
         path: `${config.dirName}/index.ts`,
         content: Mustache.render(updateTpl, {
           routeKey: dynamicRoutes.routeKey || 'routeKey',
-          rootElement: api.config.mountElementId,
-          defaultTitle: api.config.title,
-          dynamicRoutesPath: winPath(`./${config.dirName}/dynamicRoutes`),
-          runtimePath: winPath(require.resolve('@umijs/runtime')),
-          renderPath: winPath(require.resolve('@umijs/renderer-react/dist/index.js')),
+          runtimePath: winPath(require.resolve('@umijs/runtime'))
         }),
       });
     },
@@ -86,50 +81,29 @@ export default (api: IApi, config: Config) => {
 
     }
   })
-  /**
-   * ======在.umi生成动态路由===
-   */
-  api.onGenerateFiles({
-    fn: async function () {
-      const route = new Route();
-      const dynamicRoutes = api.userConfig.dynamicRoutes.routes;
-      const newDynamicRoutes = {};
-      if (dynamicRoutes == null) {
-        return null;
+  api.modifyRoutes((routes) => {
+    routes = lodash.cloneDeep(routes);
+    if (dynamicRoutes && dynamicRoutes.routes) {
+      const newDynamicRoutes = [];
+      for (const key in dynamicRoutes.routes) {
+        newDynamicRoutes.push({
+          path: "/",
+          name: key,
+          [dynamicRoutes.routeKey]: `dynamicRoutes_${key}`,
+          routes: dynamicRoutes.routes[key]
+        })
       }
-      for (const key in dynamicRoutes) {
-        newDynamicRoutes[key] = await route.getRoutes({
-          config: {
-            ...api.config,
-            routes: dynamicRoutes[key],
-          },
-          root: api.paths.absPagesPath!,
-        });
-      }
-      let routeText = '{';
-      for (const key in dynamicRoutes || {}) {
-        routeText +=
-          `${key}:` +
-          new Route().getJSON({
-            routes: dynamicRoutes[key],
-            config: api.config,
-            cwd: api.cwd,
-          }) +
-          ',';
-      }
-      routeText += '}';
-      const dynamicRoutesTpl = readFileSync(join(TEMPLATE_PATH, 'dynamicRoutes.tpl'), 'utf-8');
-      api.writeTmpFile({
-        path: `${config.dirName}/dynamicRoutes.ts`,
-        content: js_beautify(
-          Mustache.render(dynamicRoutesTpl, {
-            dynamicRoutes: routeText,
-            runtimePath: winPath(require.resolve('@umijs/runtime')),
-          }),
-        ),
-      });
+      routes.push({
+        path: '/_dynamicRoutes',
+        name: "临时挂载动态路由",
+        [dynamicRoutes.routeKey]: 'dynamicRoutes',
+        routes: newDynamicRoutes
+      })
     }
+
+    return routes;
   })
+
   // 导出内容
   api.addUmiExports(() => [
     {
@@ -142,4 +116,8 @@ export default (api: IApi, config: Config) => {
        getClientRender as clientRender
     }`
   ]);
+  api.addRuntimePluginKey(() => ([
+    'patchDynamicRoutes'
+  ]))
+
 };
