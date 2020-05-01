@@ -10,7 +10,9 @@ export default [
       {
         path: './test2-1',
         key: 'test2-1',
-
+        menu: {
+          name: 'test2-1',
+        },
 
         component: '@/pages/test1',
       },
@@ -44,6 +46,9 @@ export default [
       {
         path: './test2-1',
         key: 'test2-1',
+        menu: {
+          name: 'test2-1',
+        },
         component: '@/pages/test1',
       },
       {

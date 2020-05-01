@@ -12,7 +12,9 @@ export default ({ ...props }) => {
         <a
           onClick={() => {
             //更新路由
-            reloadRoutes();
+            reloadRoutes({
+              test:"自定义"
+            });
           }}
         >
           加载动态路由

@@ -1,7 +1,7 @@
 
 
 import { plugin } from '../core/plugin';
-import { ApplyPluginsType } from '{{{ runtimePath }}}';
+import { ApplyPluginsType, } from '{{{ runtimePath }}}';
 import {clientRender} from '../umi';
 import lodash from 'lodash'
 import {
@@ -13,28 +13,19 @@ interface Route extends Omit<IRoute,'component'|'routes'>{
   routes?: Route[];
 }
 interface ReloadRoutesOptions{
+  isModify:boolean;
   [index:string]:any
 }
 //动态路由更新回调集合
-let reloadRoutesOptions:ReloadRoutesOptions = {
+export let reloadRoutesOptions:ReloadRoutesOptions = {
+  isModify:false
 };
 //更新路由
 const reloadRoutes = (options:object={})=>{
   reloadRoutesOptions = {
     ...options,
+    isModify:true
   };
-  const routes = getRoutes();
-  plugin.applyPlugins({
-    key: 'patchDynamicRoutes',
-    type: ApplyPluginsType.event,
-    args: { 
-      routes,
-        ...reloadRoutesOptions,
-    },
-  });
-  //深度克隆
-  const newRoute = lodash.cloneDeep([...routes]);
-  routes.splice(0,routes.length,...newRoute)
   clientRender({ hot: true })();
 };
 /**

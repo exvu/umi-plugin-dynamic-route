@@ -1,4 +1,4 @@
-import {getRoutes,reloadRoutesOptions} from '@@/plugin-dynamic-route'
+import {getRoutes,reloadRoutesOptions} from 'umi'
 export function rootContainer(dom){
     const plugins = require('umi/_runtimePlugin');
     console.log(reloadRoutesOptions)

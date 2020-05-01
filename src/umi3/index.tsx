@@ -5,6 +5,8 @@ import { join } from 'path';
 import lodash from 'lodash';
 import { readFileSync } from 'fs';
 import { Config } from '..';
+import { Route } from '@umijs/core';
+
 const TEMPLATE_PATH = join(__dirname, 'template');
 const { Mustache, winPath } = utils;
 export default (api: IApi, config: Config) => {
@@ -81,20 +83,25 @@ export default (api: IApi, config: Config) => {
 
     }
   })
-  api.modifyRoutes((routes) => {
+  api.modifyRoutes(async (routes) => {
     routes = lodash.cloneDeep(routes);
+    const umiRoute = new Route();
     if (dynamicRoutes && dynamicRoutes.routes) {
       const newDynamicRoutes = [];
       for (const key in dynamicRoutes.routes) {
         newDynamicRoutes.push({
-          path: "/",
           name: key,
           [dynamicRoutes.routeKey]: `dynamicRoutes_${key}`,
-          routes: dynamicRoutes.routes[key]
+          routes: await umiRoute.getRoutes({
+            config: {
+              ...api.config,
+              routes:dynamicRoutes.routes[key],
+            },
+            root: api.paths.absPagesPath!,
+          }),
         })
       }
       routes.push({
-        path: '/_dynamicRoutes',
         name: "临时挂载动态路由",
         [dynamicRoutes.routeKey]: 'dynamicRoutes',
         routes: newDynamicRoutes
@@ -103,7 +110,17 @@ export default (api: IApi, config: Config) => {
 
     return routes;
   })
+  api.onGenerateFiles(function () {
+    /**
+     * ======生成app.ts文件===
+     */
+    const exportsTpl = readFileSync(join(TEMPLATE_PATH, 'app.tpl'), 'utf-8');
 
+    api.writeTmpFile({
+      path:`${config.dirName}/app.tsx`, content:exportsTpl
+    });
+    
+  });
   // 导出内容
   api.addUmiExports(() => [
     {
@@ -118,6 +135,10 @@ export default (api: IApi, config: Config) => {
   ]);
   api.addRuntimePluginKey(() => ([
     'patchDynamicRoutes'
-  ]))
+  ]));
+   api.addRuntimePlugin({
+     fn:() => [`${api.paths.absTmpPath}/${config.dirName}/app.tsx`],
+     stage:-Infinity
+   });
 
 };

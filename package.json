@@ -14,16 +14,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "js-beautify": "^1.10.3",
-    "umi-build-dev": "^1.18.5",
-    "umi-types": "^0.5.14"
+ 
   },
   "devDependencies": {
     "@types/js-beautify": "^1.8.2",
     "father-build": "^1.17.2",
     "np": "^6.2.1",
     "typescript": "^3.8.3",
-    "umi": "^3.1.0"
+    "umi": "^3.1.0",
+    "js-beautify": "^1.10.3",
+    "umi-build-dev": "^1.18.5",
+    "umi-types": "^0.5.14"
   },
   "peerDependencies": {
     "umi": "^3.1.0"

@@ -7,10 +7,6 @@ export default defineConfig({
     routeKey: "routeKey1",
     routes: dynamicRoutes
   },
-  layout: {
-    name: 'test',
-    locale: true,
-  },
   routes: [
     {
       path: '/',
@@ -20,7 +16,7 @@ export default defineConfig({
       menu: {
         name: '主页', // 兼容此写法
       },
-      component: '@/layouts/BlankLayout',
+      component: '@/layouts',
       routeKey1: "home",
       routes: [
         {
