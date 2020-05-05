@@ -34,7 +34,7 @@ const reloadRoutes = (options:object={})=>{
 function findRouteByKey(
   routes: Route[],
   key: string,
-  routeKey:string
+  routeKey:string='{{{routeKey}}}'
 ): null | { route: any; index: string; parent: any } {
   for (const index in routes) {
     const route = routes[index];
@@ -69,7 +69,7 @@ const getRoutes = ():Route => require('../core/routes').routes;
 //获取动态路由
 function getDynamicRoutes(key?: string):Route|null {
   const routes = getRoutes();
-  const { route } = findRouteByKey(routes, `dynamicRoutes_${key}`, '{{{routeKey}}}') || {};
+  const { route } = findRouteByKey(routes, `dynamicRoutes_${key}`) || {};
   if (!route || !route.routes) {
     return null;
   }
