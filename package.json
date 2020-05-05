@@ -1,12 +1,13 @@
 {
   "name": "@exvu/umi-plugin-dynamic-route",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "description": "动态路由",
   "main": "lib/index.js",
   "scripts": {
     "build": "father-build",
     "dev": "father-build --watch",
     "publish": "npm publish --access public",
+    "prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish",
     "umi3": "cd example-umi3  && tyarn start",
     "umi2": "cd example-umi2  && tyarn start"
   },
