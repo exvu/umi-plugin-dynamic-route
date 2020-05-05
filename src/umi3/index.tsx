@@ -91,7 +91,7 @@ export default (api: IApi, config: Config) => {
       for (const key in dynamicRoutes.routes) {
         newDynamicRoutes.push({
           name: key,
-          [dynamicRoutes.routeKey]: `dynamicRoutes_${key}`,
+          [dynamicRoutes.routeKey||"routeKey"]: `dynamicRoutes_${key}`,
           routes: await umiRoute.getRoutes({
             config: {
               ...api.config,
@@ -103,7 +103,7 @@ export default (api: IApi, config: Config) => {
       }
       routes.push({
         name: "临时挂载动态路由",
-        [dynamicRoutes.routeKey]: 'dynamicRoutes',
+        [dynamicRoutes.routeKey||'routeKey']: 'dynamicRoutes',
         routes: newDynamicRoutes
       })
     }
