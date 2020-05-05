@@ -1,6 +1,6 @@
 {
   "name": "@exvu/umi-plugin-dynamic-route",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "动态路由",
   "main": "lib/index.js",
   "scripts": {
